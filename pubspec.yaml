@@ -31,5 +31,5 @@ flutter:
     - assets/screenshot-install.png
     - assets/screenshot-install.jpg
     - assets/screenshot-editor.jpg
-    - assets/app_icon.png
-    - assets/app_icon_512.png
+    - assets/app-icon.png
+    - assets/app-icon-512.png
