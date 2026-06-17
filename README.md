@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/2ccb4cfc-fa24-4c30-bff7-2b6989ca65b9">
-    <img src="https://github.com/user-attachments/assets/2ccb4cfc-fa24-4c30-bff7-2b6989ca65b9" width="820" alt="flutter-installer-ui hero">
-  </picture>
+  <img src="https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/hero.jpg" width="820" alt="Leenx Installer hero">
 </p>
 
 <!--
@@ -19,7 +16,7 @@ flatpak archive". Design style: clean, high-contrast, dark theme, cyberpunk
 utilitarian. --ar 16:9 --v 6
 -->
 
-<h1 align="center">flutter-installer-ui</h1>
+<h1 align="center">Leenx Installer</h1>
 
 <p align="center">
   <strong>A macOS-style desktop installer that <em>actually</em> installs things.</strong><br>
@@ -58,7 +55,7 @@ utilitarian. --ar 16:9 --v 6
 
 | Install view | Installed apps panel | Launcher editor |
 |-------------|----------------------|----------------|
-| ![install](https://github.com/user-attachments/assets/placeholder-install) | ![apps](https://github.com/user-attachments/assets/placeholder-apps) | ![editor](https://github.com/user-attachments/assets/placeholder-editor) |
+| ![install](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-install.jpg) | ![apps](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-apps.jpg) | (coming soon) |
 
 ---
 
@@ -100,8 +97,8 @@ The entire application is a **single file** — `lib/main.dart` — keeping it s
 ### Clone & run
 
 ```bash
-git clone https://github.com/AxDSan/flutter-installer-ui.git
-cd flutter-installer-ui
+git clone https://github.com/AxDSan/leenx-installer.git
+cd Leenx Installer
 flutter pub get
 flutter run -d linux
 ```

@@ -1930,7 +1930,7 @@ class InstallerService {
 Version=1.0
 Type=Application
 Name=${_humanize(name)}
-Comment=Installed by flutter_installer_ui
+Comment=Installed by Leenx Installer
 Exec=$exec
 Terminal=false
 Categories=Utility;
@@ -2481,7 +2481,7 @@ class _LauncherEditorState extends State<_LauncherEditor> {
 Version=1.0
 Type=Application
 Name=${_humanizeName(widget.app.name)}
-Comment=Installed by flutter_installer_ui
+Comment=Installed by Leenx Installer
 Exec=$exec
 Terminal=false
 Categories=Utility;

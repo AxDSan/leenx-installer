@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:flutter_installer_ui/main.dart';
+import 'package:leenx_installer/main.dart';
 
 Directory _makeFakeHome(String tag) {
   final root = Directory(p.join(

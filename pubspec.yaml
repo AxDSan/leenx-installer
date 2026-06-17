@@ -1,4 +1,4 @@
-name: flutter_installer_ui
+name: leenx_installer
 description: "A macOS-style installer window that actually installs dropped archives to ~/.local/share on Linux."
 publish_to: 'none'
 version: 1.0.0+1
@@ -26,3 +26,6 @@ flutter:
     - assets/background.jpg
     - assets/tar_gz_icon.png
     - assets/home_folder_icon.png
+    - assets/hero.jpg
+    - assets/screenshot-install.jpg
+    - assets/screenshot-apps.jpg
