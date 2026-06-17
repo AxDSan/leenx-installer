@@ -10,14 +10,6 @@ import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
-  // CLI mode: the 'leenx' shell wrapper sets LEENX_ARGS when a subcommand
-  // is used.  We check this *before* window_manager so no window opens.
-  final cliArg = Platform.environment['LEENX_ARG'];
-  if (cliArg != null) {
-    await _runCli(cliArg);
-    return;
-  }
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await windowManager.ensureInitialized();
@@ -32,45 +24,23 @@ void main() async {
     title: 'Install Application',
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    // Set the task bar / window icon using the resolved executable path.
+    // The icon lives at data/flutter_assets/assets/app-icon-512.png relative
+    // to the compiled binary (works in both dev and release bundle).
+    try {
+      final iconPath = p.join(
+        p.dirname(Platform.resolvedExecutable),
+        'data', 'flutter_assets', 'assets', 'app-icon-512.png',
+      );
+      if (File(iconPath).existsSync()) {
+        await windowManager.setIcon(iconPath);
+      }
+    } catch (_) {}
     await windowManager.show();
     await windowManager.focus();
   });
 
   runApp(const InstallerApp());
-}
-
-Future<void> _runCli(String source) async {
-  final file = File(source);
-  if (!file.existsSync()) {
-    print('File not found: $source');
-    exitCode = 1;
-    exit(1);
-  }
-  final home = Directory(Platform.environment['HOME'] ?? '/tmp');
-  final appsDir = Directory(p.join(home.path, '.local', 'share', 'installer-apps'));
-  final binDir = Directory(p.join(home.path, '.local', 'bin'));
-
-  final svc = InstallerService();
-  InstallResult? result;
-  try {
-    await for (final p in svc.install(
-      source: XFile(source),
-      home: home,
-      appsDir: appsDir,
-      binDir: binDir,
-    )) {
-      if (p.result != null) result = p.result;
-      stderr.write('\r${(p.value * 100).toInt()}%  ${p.phase}');
-    }
-    stderr.writeln();
-    if (result != null) {
-      print('Installed "${result.appName}" to ${result.appDir}');
-      print('Launcher: ${result.desktopFile}');
-    }
-  } catch (e) {
-    stderr.writeln('\nError: $e');
-  }
-  exit(exitCode);
 }
 
 class InstallerApp extends StatelessWidget {
