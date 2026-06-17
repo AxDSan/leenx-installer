@@ -87,8 +87,8 @@ jobs:
       - name: Create release archive
         run: |
           mkdir -p leenx-${{ github.ref_name }}-linux-x64
-          cp -r dist/bundle leenx-${{ github.ref_name }}-linux-x64/
-          cp dist/leenx_cli leenx-${{ github.ref_name }}-linux-x64/leenx
+          cp -r dist/build/linux/x64/release/bundle/* leenx-${{ github.ref_name }}-linux-x64/
+          cp dist/build/leenx_cli leenx-${{ github.ref_name }}-linux-x64/leenx
           chmod +x leenx-${{ github.ref_name }}-linux-x64/leenx
           tar -czf leenx-${{ github.ref_name }}-linux-x64.tar.gz leenx-${{ github.ref_name }}-linux-x64/
 
@@ -99,7 +99,7 @@ jobs:
           body: See [CHANGELOG.md](https://github.com/AxDSan/leenx-installer/blob/main/CHANGELOG.md) for details.
           files: |
             leenx-${{ github.ref_name }}-linux-x64.tar.gz
-            dist/leenx_cli
+            dist/build/leenx_cli
           draft: false
           prerelease: false
           generate_release_notes: true
