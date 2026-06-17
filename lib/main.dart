@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
 
-void main(List<String> args) async {
-  // CLI mode: leenx install <archive>
-  if (args.isNotEmpty) {
-    await _runCli(args);
+void main() async {
+  // CLI mode: the 'leenx' shell wrapper sets LEENX_ARGS when a subcommand
+  // is used.  We check this *before* window_manager so no window opens.
+  final cliArg = Platform.environment['LEENX_ARG'];
+  if (cliArg != null) {
+    await _runCli(cliArg);
     return;
   }
 
@@ -37,18 +39,12 @@ void main(List<String> args) async {
   runApp(const InstallerApp());
 }
 
-Future<void> _runCli(List<String> args) async {
-  if (args.length < 2 || args[0] != 'install') {
-    print('Usage: leenx install <archive.tar.gz>');
-    exitCode = 1;
-    return;
-  }
-  final source = args[1];
+Future<void> _runCli(String source) async {
   final file = File(source);
   if (!file.existsSync()) {
     print('File not found: $source');
     exitCode = 1;
-    return;
+    exit(1);
   }
   final home = Directory(Platform.environment['HOME'] ?? '/tmp');
   final appsDir = Directory(p.join(home.path, '.local', 'share', 'installer-apps'));
@@ -70,12 +66,11 @@ Future<void> _runCli(List<String> args) async {
     if (result != null) {
       print('Installed "${result.appName}" to ${result.appDir}');
       print('Launcher: ${result.desktopFile}');
-      exitCode = 0;
     }
   } catch (e) {
     stderr.writeln('\nError: $e');
-    exitCode = 1;
   }
+  exit(exitCode);
 }
 
 class InstallerApp extends StatelessWidget {
