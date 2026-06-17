@@ -2,6 +2,18 @@
   <img src="https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/hero.jpg" width="820" alt="Leenx Installer hero">
 </p>
 
+<p align="center">
+  <a href="https://github.com/AxDSan/leenx-installer/actions/workflows/ci.yml">
+    <img src="https://github.com/AxDSan/leenx-installer/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+  <a href="https://github.com/AxDSan/leenx-installer/releases">
+    <img src="https://img.shields.io/github/v/release/AxDSan/leenx-installer?color=5AC8FA&label=release" alt="Release">
+  </a>
+  <a href="https://github.com/AxDSan/leenx-installer/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+  </a>
+</p>
+
 <!--
 HERO IMAGE (T2I Prompt for DALL·E / Midjourney / Stable Diffusion):
 
