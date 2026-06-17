@@ -9,7 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:window_manager/window_manager.dart';
 
-void main() async {
+void main(List<String> args) async {
+  // CLI mode: leenx install <archive>
+  if (args.isNotEmpty) {
+    await _runCli(args);
+    return;
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await windowManager.ensureInitialized();
@@ -29,6 +35,47 @@ void main() async {
   });
 
   runApp(const InstallerApp());
+}
+
+Future<void> _runCli(List<String> args) async {
+  if (args.length < 2 || args[0] != 'install') {
+    print('Usage: leenx install <archive.tar.gz>');
+    exitCode = 1;
+    return;
+  }
+  final source = args[1];
+  final file = File(source);
+  if (!file.existsSync()) {
+    print('File not found: $source');
+    exitCode = 1;
+    return;
+  }
+  final home = Directory(Platform.environment['HOME'] ?? '/tmp');
+  final appsDir = Directory(p.join(home.path, '.local', 'share', 'installer-apps'));
+  final binDir = Directory(p.join(home.path, '.local', 'bin'));
+
+  final svc = InstallerService();
+  InstallResult? result;
+  try {
+    await for (final p in svc.install(
+      source: XFile(source),
+      home: home,
+      appsDir: appsDir,
+      binDir: binDir,
+    )) {
+      if (p.result != null) result = p.result;
+      stderr.write('\r${(p.value * 100).toInt()}%  ${p.phase}');
+    }
+    stderr.writeln();
+    if (result != null) {
+      print('Installed "${result.appName}" to ${result.appDir}');
+      print('Launcher: ${result.desktopFile}');
+      exitCode = 0;
+    }
+  } catch (e) {
+    stderr.writeln('\nError: $e');
+    exitCode = 1;
+  }
 }
 
 class InstallerApp extends StatelessWidget {
