@@ -60,13 +60,19 @@ jobs:
       - name: Build CLI binary
         run: dart compile exe bin/leenx.dart -o build/leenx_cli
 
-      - name: Upload release artifacts
+      - name: Package release
+        run: |
+          mkdir -p dist/leenx-${{ github.ref_name }}-linux-x64
+          cp -r build/linux/x64/release/bundle/* dist/leenx-${{ github.ref_name }}-linux-x64/
+          cp build/leenx_cli dist/leenx-${{ github.ref_name }}-linux-x64/leenx
+          chmod +x dist/leenx-${{ github.ref_name }}-linux-x64/leenx
+          cd dist && tar -czf leenx-${{ github.ref_name }}-linux-x64.tar.gz leenx-${{ github.ref_name }}-linux-x64/
+
+      - name: Upload release tarball
         uses: actions/upload-artifact@v4
         with:
-          name: leenx-linux-x64
-          path: |
-            build/linux/x64/release/bundle/
-            build/leenx_cli
+          name: leenx-release
+          path: dist/leenx-${{ github.ref_name }}-linux-x64.tar.gz
 
   release:
     needs: [test, build-linux]
@@ -78,19 +84,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download artifacts
+      - name: Download release tarball
         uses: actions/download-artifact@v4
         with:
-          name: leenx-linux-x64
+          name: leenx-release
           path: dist
-
-      - name: Create release archive
-        run: |
-          mkdir -p leenx-${{ github.ref_name }}-linux-x64
-          cp -r dist/build/linux/x64/release/bundle/* leenx-${{ github.ref_name }}-linux-x64/
-          cp dist/build/leenx_cli leenx-${{ github.ref_name }}-linux-x64/leenx
-          chmod +x leenx-${{ github.ref_name }}-linux-x64/leenx
-          tar -czf leenx-${{ github.ref_name }}-linux-x64.tar.gz leenx-${{ github.ref_name }}-linux-x64/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -98,8 +96,7 @@ jobs:
           name: Leenx Installer ${{ github.ref_name }}
           body: See [CHANGELOG.md](https://github.com/AxDSan/leenx-installer/blob/main/CHANGELOG.md) for details.
           files: |
-            leenx-${{ github.ref_name }}-linux-x64.tar.gz
-            dist/build/leenx_cli
+            dist/leenx-${{ github.ref_name }}-linux-x64.tar.gz
           draft: false
           prerelease: false
           generate_release_notes: true
