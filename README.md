@@ -55,7 +55,7 @@ utilitarian. --ar 16:9 --v 6
 
 | Install view | Installed apps panel | Launcher editor |
 |-------------|----------------------|----------------|
-| ![install](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-install.jpg) | ![apps](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-apps.jpg) | (coming soon) |
+| ![install](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-install.png) | ![apps](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-install.jpg) | ![editor](https://raw.githubusercontent.com/AxDSan/leenx-installer/main/assets/screenshot-editor.jpg) |
 
 ---
 
