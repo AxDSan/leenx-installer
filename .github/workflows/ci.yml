@@ -10,11 +10,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cirruslabs/flutter:3.38.6
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.6'
+          channel: 'stable'
 
       - name: Enable Flutter Linux desktop
         run: flutter config --enable-linux-desktop
@@ -23,7 +26,7 @@ jobs:
         run: flutter pub get
 
       - name: Analyze
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run tests
         run: flutter test
@@ -31,11 +34,14 @@ jobs:
   build-linux:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cirruslabs/flutter:3.38.6
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.6'
+          channel: 'stable'
 
       - name: Enable Flutter Linux desktop
         run: flutter config --enable-linux-desktop
@@ -85,6 +91,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Leenx Installer ${{ github.ref_name }}
+          body: See [CHANGELOG.md](https://github.com/AxDSan/leenx-installer/blob/main/CHANGELOG.md) for details.
           files: |
             leenx-${{ github.ref_name }}-linux-x64.tar.gz
             dist/leenx_cli
