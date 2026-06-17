@@ -107,7 +107,18 @@ flutter run -d linux
 
 ```bash
 flutter build linux --release
-./build/linux/x64/release/bundle/flutter_installer_ui
+# Run from the bundle
+./build/linux/x64/release/bundle/leenx_installer
+
+# Or install system-wide (single command)
+mkdir -p ~/.local/share/leenx
+cp -r build/linux/x64/release/bundle/* ~/.local/share/leenx/
+cat > ~/.local/bin/leenx <<'EOF'
+#!/bin/sh
+exec "$HOME/.local/share/leenx/leenx_installer" "$@"
+EOF
+chmod +x ~/.local/bin/leenx
+# Now you can run: leenx
 ```
 
 ### Run tests
