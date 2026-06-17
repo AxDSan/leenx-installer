@@ -24,18 +24,9 @@ void main() async {
     title: 'Install Application',
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
-    // Set the task bar / window icon using the resolved executable path.
-    // The icon lives at data/flutter_assets/assets/app-icon-512.png relative
-    // to the compiled binary (works in both dev and release bundle).
-    try {
-      final iconPath = p.join(
-        p.dirname(Platform.resolvedExecutable),
-        'data', 'flutter_assets', 'assets', 'app-icon-512.png',
-      );
-      if (File(iconPath).existsSync()) {
-        await windowManager.setIcon(iconPath);
-      }
-    } catch (_) {}
+    // Window icon is set in the C runner (my_application.cc) via
+    // gtk_window_set_icon_from_file so every frame and task bar entry
+    // shows the correct icon immediately — no Flutter/GTK default.
     await windowManager.show();
     await windowManager.focus();
   });
