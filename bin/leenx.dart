@@ -190,40 +190,151 @@ Categories=Utility;
 ''';
     File(path).writeAsStringSync(content);
   }
+
+  static void uninstall(String appName, String home) {
+    final appDir = Directory(p.join(home, '.local', 'share', 'installer-apps', appName));
+    final desktopFile = File(p.join(home, '.local', 'share', 'applications', 'installer-$appName.desktop'));
+
+    // Running-process guard
+    final procs = _runningPids(appDir.path);
+    if (procs.isNotEmpty) {
+      throw StateError('"$appName" is currently running (PID ${procs.first}). Close it first.');
+    }
+
+    if (appDir.existsSync()) appDir.deleteSync(recursive: true);
+    if (desktopFile.existsSync()) desktopFile.deleteSync();
+    try {
+      Process.runSync('update-desktop-database', [
+        p.join(home, '.local', 'share', 'applications'),
+      ]);
+    } catch (_) {}
+  }
+
+  static List<int> _runningPids(String dir) {
+    final hits = <int>[];
+    final proc = Directory('/proc');
+    if (!proc.existsSync()) return hits;
+    for (final entry in proc.listSync()) {
+      if (entry is! Directory) continue;
+      final exe = File('${entry.path}/exe');
+      if (!exe.existsSync()) continue;
+      try {
+        final target = exe.resolveSymbolicLinksSync();
+        if (target.startsWith('$dir/') || target == dir) {
+          final pid = int.tryParse(p.basename(entry.path));
+          if (pid != null) hits.add(pid);
+        }
+      } catch (_) {}
+    }
+    return hits;
+  }
+
+  static List<String> listInstalled(String home) {
+    final appsDir = Directory(p.join(home, '.local', 'share', 'installer-apps'));
+    if (!appsDir.existsSync()) return [];
+    final list = <String>[];
+    for (final entry in appsDir.listSync()) {
+      if (entry is Directory) {
+        list.add(p.basename(entry.path));
+      }
+    }
+    list.sort();
+    return list;
+  }
 }
 
 void main(List<String> args) {
-  if (args.length < 2 || args[0] != 'install') {
-    stderr.writeln('Usage: leenx install <archive>');
+  if (args.isEmpty) {
+    stderr.writeln('Usage: leenx <command> [args]');
+    stderr.writeln();
+    stderr.writeln('Commands:');
+    stderr.writeln('  install <archive>     Install an archive');
+    stderr.writeln('  uninstall <app>       Uninstall an app (name or # from list)');
+    stderr.writeln('  list                  List installed apps');
     exitCode = 1;
     return;
   }
-  final src = args[1];
-  if (!File(src).existsSync()) {
-    stderr.writeln('File not found: $src');
-    exitCode = 1;
-    return;
-  }
-  final home = Platform.environment['HOME'] ?? '/tmp';
 
-  _Service.install(
-    srcPath: src,
-    home: home,
-    appsDir: p.join(home, '.local', 'share', 'installer-apps'),
-    binDir: p.join(home, '.local', 'bin'),
-  ).listen(
-    (p) {
-      stderr.write('\r${(p.value * 100).toInt()}%  ${p.phase}');
-      if (p.result != null) {
-        stderr.writeln();
-        print('Installed "${p.result!.appName}" to ${p.result!.appDir}');
-        print('Launcher: ${p.result!.desktopFile}');
+  final home = Platform.environment['HOME'] ?? '/tmp';
+  final cmd = args[0];
+
+  switch (cmd) {
+    case 'install':
+      if (args.length < 2) {
+        stderr.writeln('Usage: leenx install <archive>');
+        exitCode = 1;
+        return;
       }
-    },
-    onError: (e) {
-      stderr.writeln('\nError: $e');
+      final src = args[1];
+      if (!File(src).existsSync()) {
+        stderr.writeln('File not found: $src');
+        exitCode = 1;
+        return;
+      }
+      _Service.install(
+        srcPath: src,
+        home: home,
+        appsDir: p.join(home, '.local', 'share', 'installer-apps'),
+        binDir: p.join(home, '.local', 'bin'),
+      ).listen(
+        (p) {
+          stderr.write('\r${(p.value * 100).toInt()}%  ${p.phase}');
+          if (p.result != null) {
+            stderr.writeln();
+            print('Installed "${p.result!.appName}" to ${p.result!.appDir}');
+            print('Launcher: ${p.result!.desktopFile}');
+          }
+        },
+        onError: (e) {
+          stderr.writeln('\nError: $e');
+          exitCode = 1;
+        },
+        onDone: () => exit(exitCode),
+      );
+      return;
+
+    case 'list':
+      final apps = _Service.listInstalled(home);
+      if (apps.isEmpty) {
+        print('No apps installed.');
+        return;
+      }
+      for (int i = 0; i < apps.length; i++) {
+        print('${i + 1}. ${apps[i]}');
+      }
+      return;
+
+    case 'uninstall':
+      if (args.length < 2) {
+        stderr.writeln('Usage: leenx uninstall <app-name | #>');
+        stderr.writeln('       leenx uninstall 1');
+        exitCode = 1;
+        return;
+      }
+      String appName = args[1];
+      // If it's a number, look up from list
+      if (RegExp(r'^\d+$').hasMatch(appName)) {
+        final idx = int.parse(appName) - 1;
+        final apps = _Service.listInstalled(home);
+        if (idx < 0 || idx >= apps.length) {
+          stderr.writeln('Invalid number. Run \'leenx list\' to see available apps.');
+          exitCode = 1;
+          return;
+        }
+        appName = apps[idx];
+      }
+      try {
+        _Service.uninstall(appName, home);
+        print('Uninstalled "$appName".');
+      } catch (e) {
+        stderr.writeln('Error: $e');
+        exitCode = 1;
+      }
+      return;
+
+    default:
+      stderr.writeln('Unknown command: $cmd');
+      stderr.writeln('Usage: leenx install|uninstall|list');
       exitCode = 1;
-    },
-    onDone: () => exit(exitCode),
-  );
+  }
 }
