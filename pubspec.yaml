@@ -1,0 +1,28 @@
+name: flutter_installer_ui
+description: "A macOS-style installer window that actually installs dropped archives to ~/.local/share on Linux."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  window_manager: ^0.5.1
+  desktop_drop: ^0.7.1
+  cross_file: ^0.3.5
+  archive: ^4.0.9
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/background.jpg
+    - assets/tar_gz_icon.png
+    - assets/home_folder_icon.png
