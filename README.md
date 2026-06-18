@@ -36,10 +36,17 @@ utilitarian. --ar 16:9 --v 6
 </p>
 
 <p align="center">
-  <a href="#features">Features</a> •
-  <a href="#screenshots">Screenshots</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#architecture">Architecture</a> •
+  <strong>One-liner install:</strong>
+</p>
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AxDSan/leenx-installer/main/install.sh | bash
+```
+
+Run <code>leenx</code> for the GUI, or <code>leenx install &lt;archive&gt;</code> / <code>leenx list</code> / <code>leenx uninstall &lt;name|#&gt;</code> from the CLI. The installer downloads the latest prebuilt release tarball and falls back to building from source if Flutter is installed.
+
+<p align="center">
+  <a href="#getting-started">Build from source</a> •
   <a href="#usage">Usage</a>
 </p>
 
