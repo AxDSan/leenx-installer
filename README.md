@@ -14,6 +14,15 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>Install:</strong>
+</p>
+
+<p align="center">
+  <code>curl -fsSL https://raw.githubusercontent.com/AxDSan/leenx-installer/main/install.sh | bash</code>
+  &nbsp;&nbsp;<a href="#usage"><strong>Usage &rarr;</strong></a>
+</p>
+
 <!--
 HERO IMAGE (T2I Prompt for DALL·E / Midjourney / Stable Diffusion):
 
@@ -35,20 +44,6 @@ utilitarian. --ar 16:9 --v 6
   Drag a <code>.tar.gz</code>, <code>.zip</code>, or <code>.AppImage</code> onto the card → unpack it to <code>~/.local/share</code> → get a working launcher.
 </p>
 
-<p align="center">
-  <strong>One-liner install:</strong>
-</p>
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/AxDSan/leenx-installer/main/install.sh | bash
-```
-
-Run <code>leenx</code> for the GUI, or <code>leenx install &lt;archive&gt;</code> / <code>leenx list</code> / <code>leenx uninstall &lt;name|#&gt;</code> from the CLI. The installer downloads the latest prebuilt release tarball and falls back to building from source if Flutter is installed.
-
-<p align="center">
-  <a href="#getting-started">Build from source</a> •
-  <a href="#usage">Usage</a>
-</p>
 
 ---
 
